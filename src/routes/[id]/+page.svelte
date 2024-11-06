@@ -3,13 +3,17 @@
     const mesjid = data.getMesjid;
     const kelompok = data.kelompokWithAnggota;
     const totalSetoranSemuaKelompok = data.totalSetoranSemuaKelompok;
+    const anggotaKelompok = kelompok.map(data => {
+        return data.anggota.anggotaKelompok;
+    });
 
+    console.log(anggotaKelompok);
     let isOpen = false;
     let showHistoryModal = false;
-    let selectedSetoran = null;
-    let selectedAnggota = null;
+    let selectedSetoran: any = null;
+    let selectedAnggota: any = null;
 
-    function openModal(setoran) {
+    function openModal(setoran : any) {
         selectedSetoran = setoran;
         isOpen = true;
     }
@@ -19,7 +23,7 @@
         selectedSetoran = null;
     }
 
-    function openHistoryModal(anggota) {
+    function openHistoryModal(anggota : any) {
         selectedAnggota = anggota;
         showHistoryModal = true;
     }
@@ -45,7 +49,7 @@
 
     <h3 class="text-xl font-semibold mb-4">Anggota Penyelengara Kurban:</h3>
     {#if kelompok.length > 0}
-        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {#each kelompok as kel}
                 <li class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="p-4">
@@ -54,10 +58,8 @@
                         {#if kel.status === "ketua_kelompok" }
                             <p>Status: <span class="font-bold">Ketua Kelompok</span></p>
                         {/if}
-                        
                         {#if kel.anggota}
                             <div class="mt-4">
-                                <p class="font-semibold">Anggota:</p>
                                 <p>Nama: {kel.anggota.nama_lengkap}</p>
                                 <p>Total Setoran: <span class="font-bold">Rp.{kel.anggota.totalSetoranAnggota.toLocaleString()}</span></p>
 
@@ -69,6 +71,9 @@
                         
                         <p class="mt-4 text-blue-600">Total Setoran Kelompok: Rp {kel.jumlah_uang_setoran.toLocaleString()}</p>
                     </div>
+                    <form action="?/gabungKelompok" method="post">
+                        <button class="bg-blue-600 p-2 m-2 rounded-md text-white">Bergabung {kel.nama_kelompok}</button>
+                    </form>
                 </li>
             {/each}
         </ul>
@@ -91,7 +96,7 @@
                 <button class="mt-4 px-4 py-2 bg-red-500 text-white rounded" on:click={closeModal}>Tutup</button>
             </div>
         </div>
-    {/if}
+        {/if}
 
     {#if showHistoryModal}
         <div class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
@@ -103,7 +108,7 @@
                             <li class="border-b py-2">
                                 <p>Jumlah Setoran: Rp {s.jumlah_setoran.toLocaleString()}</p>
                                 <p>Tanggal: {new Date(s.created).toLocaleDateString()}</p>
-                                <p>Status: {s.disetujui ? 'Disetujui' : 'Pending'}</p>
+                                <p>Status: {s.disetujui ? 'tervalidasi' : 'Pending'}</p>
                             </li>
                         {/each}
                     </ul>
